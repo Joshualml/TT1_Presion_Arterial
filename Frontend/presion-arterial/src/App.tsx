@@ -1,13 +1,23 @@
-import RegisterForm from "./components/RegisterForm";
+// App.tsx
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { LoginForm, RegisterForm, UserProfile } from './routes';
 
-function App() {
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <h1>Bienvenido a la App de Presión Arterial</h1>
-      <RegisterForm />
-    </div>
+    <Router>
+      <div className="App">
+        <h1>Bienvenido a la App de Presión Arterial</h1>
+        <Routes>
+          <Route path="/" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/profile" element={<UserProfile />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
 

@@ -1,20 +1,16 @@
-import React, { useState } from 'react'; 
+// RegisterForm.tsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterForm: React.FC = () => {
   const [nombre, setNombre] = useState<string>('');
   const [contraseña, setContraseña] = useState<string>('');
-  const [edad, setEdad] = useState<number | ''>('');  // Permite vacío y número
+  const [edad, setEdad] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const userData = {
-      nombre: nombre,
-      contraseña: contraseña,
-      edad: edad,  // Convertir edad a número entero si no está vacío
-    };
-    console.log(userData);
 
     try {
       const response = await fetch('http://localhost:8000/register', {
@@ -22,27 +18,26 @@ const RegisterForm: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify({ nombre, contraseña, edad: parseInt(edad) }),
       });
 
       if (response.ok) {
-        const data = await response.json();
         setMessage('Usuario registrado exitosamente');
-        console.log(data);
+        navigate('/'); // Redirigir a la página de inicio de sesión
       } else {
         setMessage('Error al registrar usuario');
-        console.error('Error:', response.statusText);
       }
     } catch (error) {
+        console.log(error);
+        
       setMessage('Error de conexión con la API');
-      console.error('Error de conexión:', error);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div>
       <h2>Registro de Usuario</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleRegister}>
         <div>
           <label>Nombre:</label>
           <input
@@ -66,15 +61,15 @@ const RegisterForm: React.FC = () => {
           <input
             type="number"
             value={edad}
-            onChange={(e) => setEdad(e.target.value === '' ? '' : parseInt(e.target.value))}
+            onChange={(e) => setEdad(e.target.value)}
             required
           />
         </div>
-        <button type="submit">Registrar</button>
+        <button type="submit">Registrarse</button>
       </form>
       {message && <p>{message}</p>}
     </div>
   );
-}
+};
 
 export default RegisterForm;
